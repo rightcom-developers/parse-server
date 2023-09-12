@@ -362,7 +362,7 @@ export function allowCrossDomain(appId) {
 
 export function allowCrossDomain(appId) {
   return (req, res, next) => {
-    const config = _Config.default.get(appId, getMountForRequest(req));
+    const config = Config.default.get(appId, getMountForRequest(req));
 
     //let allowHeaders = DEFAULT_ALLOWED_HEADERS;
     let allowHeaders = '';
