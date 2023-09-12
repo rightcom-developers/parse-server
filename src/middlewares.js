@@ -11,6 +11,8 @@ import PostgresStorageAdapter from './Adapters/Storage/Postgres/PostgresStorageA
 export const DEFAULT_ALLOWED_HEADERS =
   'X-Parse-Master-Key, X-Parse-REST-API-Key, X-Parse-Javascript-Key, X-Parse-Application-Id, X-Parse-Client-Version, X-Parse-Session-Token, X-Requested-With, X-Parse-Revocable-Session, X-Parse-Request-Id, Content-Type, Pragma, Cache-Control';
 
+export  const DEFAULT_ALLOWED_METHODS = 'GET,PUT,POST,DELETE,OPTIONS';
+
 const getMountForRequest = function (req) {
   const mountPathLength = req.originalUrl.length - req.url.length;
   const mountPath = req.originalUrl.slice(0, mountPathLength);
@@ -335,6 +337,7 @@ function decodeBase64(str) {
   return Buffer.from(str, 'base64').toString();
 }
 
+/* 
 export function allowCrossDomain(appId) {
   return (req, res, next) => {
     const config = Config.get(appId, getMountForRequest(req));
@@ -348,6 +351,43 @@ export function allowCrossDomain(appId) {
     res.header('Access-Control-Allow-Headers', allowHeaders);
     res.header('Access-Control-Expose-Headers', 'X-Parse-Job-Status-Id, X-Parse-Push-Status-Id');
     // intercept OPTIONS method
+    if ('OPTIONS' == req.method) {
+      res.sendStatus(200);
+    } else {
+      next();
+    }
+  };
+}
+ */
+
+export function allowCrossDomain(appId) {
+  return (req, res, next) => {
+    const config = _Config.default.get(appId, getMountForRequest(req));
+
+    //let allowHeaders = DEFAULT_ALLOWED_HEADERS;
+    let allowHeaders = '';
+    let allowMethods = '';
+
+    if (config && config.allowHeaders) {
+      //allowHeaders += `, ${config.allowHeaders.join(', ')}`;
+      allowHeaders = `${config.allowHeaders.join(', ')}`;
+    }else{
+      allowHeaders = DEFAULT_ALLOWED_HEADERS;
+    }
+
+    if (config && config.allowMethods) {
+      //allowMethods = config.allowMethods;
+      allowMethods = `${config.allowMethods.join(', ')}`;
+    }else{
+      allowMethods = DEFAULT_ALLOWED_METHODS;
+    }
+
+    const allowOrigin = config && config.allowOrigin || '*';
+    res.header('Access-Control-Allow-Origin', allowOrigin);
+    res.header('Access-Control-Allow-Methods', allowMethods);
+    res.header('Access-Control-Allow-Headers', allowHeaders);
+    res.header('Access-Control-Expose-Headers', 'X-Parse-Job-Status-Id, X-Parse-Push-Status-Id'); // intercept OPTIONS method
+
     if ('OPTIONS' == req.method) {
       res.sendStatus(200);
     } else {

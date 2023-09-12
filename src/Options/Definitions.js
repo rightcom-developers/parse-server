@@ -73,6 +73,11 @@ module.exports.ParseServerOptions = {
     help: 'Add headers to Access-Control-Allow-Headers',
     action: parsers.arrayParser,
   },
+  allowMethods: {
+    env: 'PARSE_SERVER_ALLOW_METHODS',
+    help: 'Add methods to Access-Control-Allow-Methods',
+    action: parsers.arrayParser,
+  },
   allowOrigin: {
     env: 'PARSE_SERVER_ALLOW_ORIGIN',
     help: 'Sets the origin to Access-Control-Allow-Origin',

@@ -56,6 +56,8 @@ export interface ParseServerOptions {
   appName: ?string;
   /* Add headers to Access-Control-Allow-Headers */
   allowHeaders: ?(string[]);
+  /* Add methods to Access-Control-Allow-Methods */
+  allowMethods: ?(string[]);
   /* Sets the origin to Access-Control-Allow-Origin */
   allowOrigin: ?string;
   /* Adapter module for the analytics */

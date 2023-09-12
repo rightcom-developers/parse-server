@@ -73,6 +73,7 @@ export class Config {
     masterKey,
     readOnlyMasterKey,
     allowHeaders,
+    allowMethods,
     idempotencyOptions,
     emailVerifyTokenReuseIfValid,
     fileUpload,
@@ -115,6 +116,7 @@ export class Config {
     this.validateDefaultLimit(defaultLimit);
     this.validateMaxLimit(maxLimit);
     this.validateAllowHeaders(allowHeaders);
+    this.validateAllowMethods(allowMethods);
     this.validateIdempotencyOptions(idempotencyOptions);
     this.validatePagesOptions(pages);
     this.validateSecurityOptions(security);
@@ -486,6 +488,22 @@ export class Config {
         });
       } else {
         throw 'Allow headers must be an array';
+      }
+    }
+  }
+
+  static validateAllowMethods(allowMethods) {
+    if (![null, undefined].includes(allowMethods)) {
+      if (Array.isArray(allowMethods)) {
+        allowMethods.forEach(header => {
+          if (typeof header !== 'string') {
+            throw 'Allow methods must only contain strings';
+          } else if (!header.trim().length) {
+            throw 'Allow methods must not contain empty strings';
+          }
+        });
+      } else {
+        throw 'Allow methods must be an array';
       }
     }
   }
